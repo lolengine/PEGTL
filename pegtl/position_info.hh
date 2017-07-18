@@ -16,13 +16,11 @@ namespace pegtl
       template< typename Input >
       explicit
       position_info( const Input & in )
-            : byte( in.byte() ),
-              line( in.line() ),
+            : line( in.line() ),
               byte_in_line( in.byte_in_line() ),
               source( in.source() )
       { }
 
-      std::size_t byte;
       std::size_t line;
       std::size_t byte_in_line;
       std::string source;
@@ -30,7 +28,7 @@ namespace pegtl
 
    inline std::ostream & operator<< ( std::ostream & o, const position_info & p )
    {
-      return o << p.source << ':' << p.line << ':' << p.byte_in_line << '(' << p.byte << ')';
+      return o << p.source << ':' << p.line << ':' << p.byte_in_line;
    }
 
    inline std::string to_string( const position_info & p )
