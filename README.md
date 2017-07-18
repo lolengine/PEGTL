@@ -1,23 +1,23 @@
 ## Welcome to the PEGTL
 
-[![Release](https://img.shields.io/github/release/ColinH/PEGTL.svg)](https://github.com/ColinH/PEGTL/releases/latest)
-[![License](https://img.shields.io/github/license/ColinH/PEGTL.svg)](#license)
-[![TravisCI](https://travis-ci.org/ColinH/PEGTL.svg)](https://travis-ci.org/ColinH/PEGTL)
-[![Coverage](https://img.shields.io/coveralls/ColinH/PEGTL.svg)](https://coveralls.io/github/ColinH/PEGTL)
-[![Issues](https://img.shields.io/github/issues/ColinH/PEGTL.svg)](https://github.com/ColinH/PEGTL/issues)
+[![Release](https://img.shields.io/github/release/taocpp/PEGTL.svg)](https://github.com/taocpp/PEGTL/releases/latest)
+[![TravisCI](https://travis-ci.org/taocpp/PEGTL.svg)](https://travis-ci.org/taocpp/PEGTL)
+[![AppVeyor](https://ci.appveyor.com/api/projects/status/github/taocpp/PEGTL?svg=true)](https://ci.appveyor.com/project/taocpp/PEGTL)
+[![Doozer.io](https://doozer.io/badge/taocpp/PEGTL/buildstatus/master)](https://doozer.io/user/taocpp/PEGTL)
+[![Coverage](https://img.shields.io/coveralls/taocpp/PEGTL.svg)](https://coveralls.io/github/taocpp/PEGTL)
 
 The Parsing Expression Grammar Template Library (PEGTL) is a zero-dependency C++11 header-only library for creating parsers according to a [Parsing Expression Grammar](http://en.wikipedia.org/wiki/Parsing_expression_grammar) (PEG).
 
 ### Documentation
 
-* [Master Branch Documentation](https://github.com/ColinH/PEGTL/blob/master/doc/README.md)
-* [Version 1.3.x Documentation](https://github.com/ColinH/PEGTL/blob/1.3.x/doc/README.md)
+* [Version 2.x Documentation](doc/README.md)
+* [Version 1.3 Documentation](https://github.com/taocpp/PEGTL/blob/1.3.x/doc/README.md)
 
 ### Introduction
 
-Grammars are written as regular C++ code, created with template programming (not template meta programming), i.e. nested template instantiations that naturally correspond to the inductive definition of PEGs or other parser combinator approaches.
+Grammars are written as regular C++ code, created with template programming (not template meta programming), i.e. nested template instantiations that naturally correspond to the inductive definition of PEGs (and other parser-combinator approaches).
 
-A comprehensive set of parser rules that can be combined and extended by the user is included, as are mechanisms for debugging grammars and attaching user-defined actions to grammar rules.
+A comprehensive set of [parser rules](doc/Rule-Reference.md) that can be combined and extended by the user is included, as are mechanisms for debugging grammars, and for attaching user-defined [actions](doc/Actions-and-States.md) to grammar rules.
 Here is an example of how a PEG grammar rule is implemented as C++ class with the PEGTL.
 
 ```c++
@@ -28,24 +28,22 @@ Here is an example of how a PEG grammar rule is implemented as C++ class with th
 
 // The same parsing rule implemented with the PEGTL:
 
-using namespace pegtl;
+using namespace tao::pegtl;
 
-struct integer
-   : seq< opt< one< '+', '-' > >,
-          plus< digit > > {};
+struct integer : seq< opt< one< '+', '-' > >, plus< digit > > {};
 ```
 
 PEGs are superficially similar to Context-Free Grammars (CFGs), however the more deterministic nature of PEGs gives rise to some very important differences.
-The included [grammar analysis](https://github.com/ColinH/PEGTL/blob/master/doc/Grammar-Analysis.md) finds several typical errors in PEGs, including left recursion.
+The included [grammar analysis](doc/Grammar-Analysis.md) finds several typical errors in PEGs, including left recursion.
 
 ### Design
 
-The PEGTL is mostly concerned with parsing combinators and grammar rules, and with giving the user control over what else happens during a parsing run.
+The PEGTL is designed to be "lean and mean", the core library consists of approximately 5000 lines of code.
+Emphasis is on simplicity and efficiency, preferring a well-tuned simple approach over complicated optimisations.
 
-The PEGTL is designed to be "lean and mean", the actual core library has about 3000 lines of code.
-Emphasis is on simplicity and efficiency but without adding any large constructions for optimising parsers.
+The PEGTL is mostly concerned with parsing combinators and grammar rules, and with giving the user of the library (the possibility of) full control over all other aspects of a parsing run. Whether/which actions are taken, and whether/which data structures are created during a parsing run, is entirely up to the user.
 
-Whether and which actions are taken, and which data structures are created during a parsing run, is entirely up to the user of the library, however we provide some [examples](https://github.com/ColinH/PEGTL/blob/master/doc/Contrib-and-Examples.md#examples) for typical situation like unescaping escape sequences in strings, building a generic [JSON](http://www.json.org/) data structure, and on-the-fly evaluation of arithmetic expressions.
+Included are some [examples](doc/Contrib-and-Examples.md#examples) for typical situation like unescaping escape sequences in strings, building a generic [JSON](http://www.json.org/) data structure, and on-the-fly evaluation of arithmetic expressions.
 
 Through the use of template programming and template specialisations it is possible to write a grammar once, and use it in multiple ways with different (semantic) actions in different (or the same) parsing runs.
 
@@ -59,43 +57,69 @@ This leads to slightly increased compile times as the C++ compiler is given the 
 
 The master branch of the PEGTL is stable in the sense that all known bugs are fixed and all unit tests run without errors.
 
-Each commit is [automatically tested](https://travis-ci.org/ColinH/PEGTL) with multiple operating systems, compilers and versions, currently:
+Each commit is automatically tested with multiple architectures, operating systems, compilers, and versions thereof.
 
-* Linux, GCC (4.7, 4.8, 4.9, 5, 6) with libstdc++
-* Linux, Clang (3.4, 3.5, 3.6, 3.7, 3.8) with libstdc++
-* MacOS X, Xcode (6.4, 7, 7.1, 7.2, 7.3, 8) with libc++
+* Windows
 
-Systems supported but not automatically tested, *yet*:
+  * Visual Studio 2015 (x86, x64)
+  * Visual Studio 2017 (x86, x64)
+  * MinGW (i686), GCC 5
+  * MinGW-w64 (i686), GCC 5, 6
+  * MinGW-w64 (x86_64), GCC 6
 
-* Windows, Visual Studio 2015
+* Mac OS X / macOS (using libc++)
+
+  * Mac OS X 10.10, Xcode 6.4
+  * Mac OS X 10.11, Xcode 7.3
+  * macOS 10.12, Xcode 8.3
+
+* Linux (using libstdc++)
+
+  * Debian 8 (i386), GCC 4.9
+  * Ubuntu 12.04 LTS (amd64), GCC 4.8, 4.9, 5, 6
+  * Ubuntu 12.04 LTS (amd64), Clang 3.4, 3.5, 3.6, 3.7, 3.8
+  * Ubuntu 14.04 LTS (amd64), GCC 7
+  * Ubuntu 14.04 LTS (amd64), Clang 3.9, 4.0
+  * Ubuntu 14.04 LTS (i386, amd64), GCC 4.8
+  * Ubuntu 16.04 LTS (i386, amd64, armhf, arm64), GCC 5
+  * Fedora 24 (x86_64), GCC 6
+  * Fedora 24 (x86_64), Clang 3.8
+
 * Android
 
-Additionally, each commit is checked with [`valgrind`](http://valgrind.org/).
-The coverage is also automatically measured, our unit tests cover 100% of the core library code.
+  * Android 5.1, NDK release 10e
 
-[Releases](https://github.com/ColinH/PEGTL/releases) are done in accordance with [Semantic Versioning](http://semver.org/).
-This means that incompatible API changes can happen, but only between major versions.
-For details see the [changelog](https://github.com/ColinH/PEGTL/blob/master/doc/Changelog.md).
+Additionally, each commit is checked with GCC's and Clang's sanitizers as well as [`valgrind`](http://valgrind.org/).
+Code coverage is automatically measured and the unit tests cover 100% of the core library code (for releases).
+
+[Releases](https://github.com/taocpp/PEGTL/releases) are done in accordance with [Semantic Versioning](http://semver.org/).
+Incompatible API changes are *only* allowed to occur between major versions.
+For details see the [changelog](doc/Changelog.md).
 
 ### Thank You
 
 * Christopher Diggins and the YARD parser for the general idea.
-* Stephan Beal for the bug reports, suggestions and discussions.
+* George Makrydakis for the [inspiration](https://github.com/irrequietus/typestring) to `TAOCPP_PEGTL_STRING`.
 * Johannes Overmann for his invaluable [`streplace`](https://code.google.com/p/streplace/) command-line tool.
-* Sam Hocevar for contributing Visual Studio 2015 compatibility.
-* George Makrydakis for the [inspiration](https://github.com/irrequietus/typestring) to `pegtl_string_t`.
-* Kenneth Geisshirt for Android compatibility.
+* Kai Wolf for help with CMake.
+* Kenneth Geisshirt for Android compatibility and Android CI.
+* Kuzma Shapran for EOL testing and fixes.
+* Michael Becker for help with CMake.
 * Paulo Custodio for Windows-related fixes.
+* Sam Hocevar for contributing Visual Studio 2015 compatibility.
+* Stephan Beal for the bug reports, suggestions and discussions.
+* Sven Johannsen for help with CMake.
+* Zhihao Yuan for fixing several warnings when compiling with Visual Studio 2015.
 
 ### Contact
 
-For questions and suggestions about the PEGTL please contact the authors at `pegtl(at)colin-hirsch.net`.
+For questions and suggestions regarding the PEGTL, success or failure stories, and any other kind of feedback, please feel free to contact the authors at `taocpp(at)icemx.net`.
 
 ### License
 
 The PEGTL is certified [Open Source](http://www.opensource.org/docs/definition.html) software. It may be used for any purpose, including commercial purposes, at absolutely no cost. It is distributed under the terms of the [MIT license](http://www.opensource.org/licenses/mit-license.html) reproduced here.
 
-> Copyright (c) 2014-2016 Dr. Colin Hirsch and Daniel Frey
+> Copyright (c) 2007-2017 Dr. Colin Hirsch and Daniel Frey
 >
 > Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 >
