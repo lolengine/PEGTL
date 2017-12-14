@@ -52,6 +52,13 @@ For all questions and remarks contact us at **taocpp(at)icemx.net**.
 * JSON grammar according to [RFC 7159](https://tools.ietf.org/html/rfc7159) (for UTF-8 encoded JSON only).
 * Ready for production use.
 
+###### `<tao/pegtl/contrib/parse_tree.hpp>`
+
+* Basic infrastructure to build a parse tree.
+* Builds a full parse tree by default.
+* Supports selectors to choose which nodes will be stored in the parse tree and which nodes will store the matched content.
+* See also the [example](#srcexamplepegtlparse_treecpp) below.
+
 ###### `<tao/pegtl/contrib/raw_string.hpp>`
 
 * Grammar rules to parse Lua-style long (or raw) string literals.
@@ -101,7 +108,7 @@ Reads a file with an [ABNF (RFC 5234)](https://tools.ietf.org/html/rfc5234)-styl
 
 ###### `src/example/pegtl/analyze.cpp`
 
-A small example that provokes the [grammar analysis](Grammar-Analisys.md) to find problems.
+A small example that provokes the [grammar analysis](Grammar-Analysis.md) to find problems.
 
 ###### `src/example/pegtl/calculator.cpp`
 
@@ -113,7 +120,7 @@ A calculator with all binary operators from the C language that shows
 In addition to the binary operators, round brackets can be used to change the evaluation order. The implementation uses `long` integers as data type for all calculations.
 
 ```sh
-$ build/src/example/pegtl/calculator  "2 + 3 * -7"  "(2 + 3) * 7"
+$ build/src/example/pegtl/calculator "2 + 3 * -7"  "(2 + 3) * 7"
 -19
 35
 ```
@@ -128,7 +135,7 @@ Two simple examples for grammars that parse different kinds of CSV-style file fo
 
 ###### `src/example/pegtl/hello_world.cpp`
 
-Minimal parser-style "hello world" example from the [Getting Started)(Getting-Started.md) page.
+Minimal parser-style "hello world" example from the [Getting Started](Getting-Started.md) page.
 
 ###### `src/example/pegtl/json_parse.cpp`
 
@@ -154,6 +161,36 @@ Parses all files passed on the command line with a slightly experimental grammar
 ###### `src/example/pegtl/modulus_match.cpp`
 
 Shows how to implement a custom parsing rule with the simplified calling convention.
+
+###### `src/example/pegtl/parse_tree.cpp`
+
+A small example which shows how to create a parse tree for a given grammar using [`<tao/pegtl/contrib/parse_tree.hpp>`](#taopegtlcontribparse_treehpp).
+
+The example shows how to choose which rules will produce a parse tree node and which rules will store the content. The example also shows how to add additional transformations to the parse tree to transform it into an AST-like structure or to simplify it.
+
+Running the example with a slightly longer expression:
+
+```sh
+$ build/src/example/pegtl/parse_tree "2 + a*b*4 - x / ( 2 - b + c - d )"
+ROOT
+  example::minus at :1:9(9)
+    example::plus at :1:1(1)
+      example::integer "2" at :1:0(0) to :1:1(1)
+      example::multiply at :1:7(7)
+        example::multiply at :1:5(5)
+          example::variable "a" at :1:4(4) to :1:5(5)
+          example::variable "b" at :1:6(6) to :1:7(7)
+        example::integer "4" at :1:8(8) to :1:9(9)
+    example::divide at :1:13(13)
+      example::variable "x" at :1:12(12) to :1:13(13)
+      example::minus at :1:27(27)
+        example::plus at :1:23(23)
+          example::minus at :1:19(19)
+            example::integer "2" at :1:18(18) to :1:19(19)
+            example::variable "b" at :1:22(22) to :1:23(23)
+          example::variable "c" at :1:26(26) to :1:27(27)
+        example::variable "d" at :1:30(30) to :1:31(31)
+```
 
 ###### `src/example/pegtl/proto3.cpp`
 

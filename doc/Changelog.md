@@ -1,22 +1,65 @@
 # Changelog
 
+## 2.3.1
+
+Released 2017-12-14
+
+* Fixed linkage of `tao::pegtl::internal::file_open`.
+* Improved error message for missing `source` parameter of `string_input<>`.
+
+## 2.3.0
+
+Released 2017-12-11
+
+* Added constructor to `read_input<>` that accepts a `FILE*`, see issue [#78](https://github.com/taocpp/PEGTL/issues/78).
+* Enhanced [`apply`](Rule-Reference.md#apply-a-), [`apply0`](Rule-Reference.md#apply0-a-) and [`if_apply`](Rule-Reference.md#if_apply-r-a-) to support `apply()`/`apply0()`-methods returning boolean values.
+* Simplified implementation of [`raw_string`](Contrib-and-Examples.md#taopegtlcontribraw_stringhpp), the optional `Contents...` rules' `apply()`/`apply0()`-methods are now called with the original states.
+* Fixed the tracer to work with `apply()`/`apply0()`-methods returning boolean values. (Thanks Joel Frederico)
+* Fixed, simplified and improved [`examples/parse_tree.cpp`](Contrib-and-Examples.md#srcexamplepegtlparse_treecpp).
+
+## 2.2.2
+
+Released 2017-11-22
+
+* Bumped version.
+
+## 2.2.1
+
+Released 2017-11-22
+
+* Celebrating the PEGTL's 10th anniversary!
+* Fixed missing call to the [control class'](Control-and-Debug.md#control-functions) `failure()`-method when a rule with an `apply()`-method with a boolean return type fails.
+* Fixed string handling in [`examples/abnf2pegtl.cc`](Contrib-and-Examples.md#srcexamplepegtlabnf2pegtlcpp).
+* Simplified/improved Android build.
+
+## 2.2.0
+
+Released 2017-09-24
+
+* Added possibility for actions' `apply()`- or `apply0()`-methods to return a `bool` which is then used to determine overall success or failure of the rule to which such an action was attached.
+* Added [`<tao/pegtl/contrib/parse_tree.hpp>`](Contrib-and-Examples.md#taopegtlcontribparse_treehpp) and the [`examples/parse_tree.cpp`](Contrib-and-Examples.md#srcexamplepegtlparse_treecpp) application that shows how to build a [parse tree](https://en.wikipedia.org/wiki/Parse_tree). The example goes beyond a traditional parse tree and demonstrates how to select which nodes to include in the parse tree and how to transform the nodes into an [AST](https://en.wikipedia.org/wiki/Abstract_syntax_tree)-like structure.
+* Added `bom` rules for UTF-8, UTF-16 and UTF-32.
+* Added some missing includes for `config.hpp`.
+* Added [automated testing](https://travis-ci.org/taocpp/PEGTL) with Clang 5.
+* Added [automated testing](https://travis-ci.org/taocpp/PEGTL) with Xcode 9.
+
 ## 2.1.4
 
 Released 2017-06-27
 
-* Fix shadow warning.
+* Fixed shadow warning.
 
 ## 2.1.3
 
 Released 2017-06-27
 
-* Fix [`raw_string`](Contrib-and-Examples.md#taopegtlcontribraw_stringhpp) with optional parameters.
+* Fixed [`raw_string`](Contrib-and-Examples.md#taopegtlcontribraw_stringhpp) with optional parameters.
 
 ## 2.1.2
 
 Released 2017-06-25
 
-* Bump version.
+* Bumped version.
 
 ## 2.1.1
 
@@ -158,23 +201,23 @@ Semantic versioning was introduced with version 1.0.0.
 
 * Deprecated old site on Google code and published new version on GitHub.
 * Removed the semi-automatic pretty-printing of grammar rules; now the class names are used, when possible demangled.
-* Renamed some of the classes that have more words in their name to use an underscore, e.g. `ifmust<>` is now `if_must<>`.
-* The input layer was simplified and can only parse memory blocks and files which allows for some optimisations, with possible future work in this area to find a more generic solution if necessary.
+* Renamed rule classes with multiple words in their names to use underscores, e.g. `ifmust<>` is now `if_must<>`.
+* Removed support for incremental/stream parsing to allow for some simplifications and optimisations (*reintroduced in 2.0.0*).
 * Removed the rules `apply<>` and `if_apply<>` that were used to directly call actions from within the grammar (*reintroduced in 2.0.0*), and:
 * Where the other method of attaching actions to rules in PEGTL 0.x required specialisation of a given class template `action<>`, in PEGTL 1.y the action class template can be chosen by the user and changed at any point in the grammar.
 * As a side-effect there is a much cleaner way of enabling and disabling actions in a portion of the grammar.
 * Actions now have access to the current position in the input, i.e. to the filename, and line and column number.
 * Actions now receive a pointer to, and the size of, the matched portion of the input (previously a `std::string` with a copy of the matched data), therefore:
-* There is no distinction between actions that require access to the matched data and those that don't, furthermore:
-* The object via which the actions gain access to the matched data is of a similar type that the rules work on, ~~so actions can easily invoke another grammar on the matched data.~~
+* ~~There is no distinction between actions that require access to the matched data and those that don't, furthermore~~:
+* The object via which actions gain access to the matched data is similar to that which rules receive ~~so actions can easily invoke another grammar on the matched data.~~
 * The `at<>` and `not_at<>` rules now call their subordinate rules with actions disabled.
 * The variadic `states...` arguments that are passed through all rule invocations for use by the actions are *not* forwarded with `std::forward<>` anymore since it (usually) doesn't make much sense to move them, and accidentially moving multiple times was a possible error scenario.
 * There are now five different `rep` rules for repeating a sequence of rules with more control over the acceptable or required number of repetitions.
 * There are new rules `try_catch<>` and `try_catch_type<>` that convert global errors, i.e. exceptions, into local errors, i.e. a return value of `false`.
 * Unified concept for actions and debug hooks, i.e. just like the actions are called from a class template that is passed into the top-level `parse()`-function, there is another class template that is called for debug/trace and error throwing purposes; both can be changed at any point within the grammar.
 * A large under-the-hood reorganisation has the benefit of preventing actions from being invoked on rules that are implementation details of other rules, e.g. the `pad< Rule, Padding >` rule contains `star< Padding >` in its implementation, so a specialisation of the action-class-template for `star< Padding >` would be called within `pad<>`, even though the `star< Pad >` was not explicitly written by the user; in PEGTL 1.y these unintended action invocations no longer occur.
-* Partial support for Unicode has been added in the form of some basic rules like `one<>` and `range<>` also being supplied in a UTF-8 (and experimental UTF-32 *and UTF-16*) aware version(s) that can correctly process arbitrary code points from `0` to `0x10ffff`.
-* The supplied input class works together with the supplied exception throwing to support better error locations when performing nested file parsing, i.e. a `parse_error` contains a vector of parse positions.
+* Partial support for Unicode has been added in the form of some basic rules like `one<>` and `range<>` also being supplied in a UTF-8 (and experimental UTF-16 and UTF-32) aware version(s) that can correctly process arbitrary code points from `0` to `0x10ffff`.
+* The supplied input classes work together with the supplied exception throwing to support better error locations when performing nested file parsing, i.e. a `parse_error` contains a vector of parse positions.
 * Added a function to analyse a grammar for the presence of infinite loops, i.e. cycles in the rules that do not (necessarily) consume any input like left recursion.
 * As actions are applied to a grammar in a non-invasive way, several common grammars were added to the PEGTL as documented in [Contrib and Examples](Contrib-and-Examples.md).
 * The `list<>`-rule was replaced by a set of new list rules with different padding semantics.
@@ -182,7 +225,7 @@ Semantic versioning was introduced with version 1.0.0.
 * The `if_then<>` rule was removed.
 * The `error_mode` flag was removed.
 * The semantics of the `must<>` rules was changed to convert local failure to global failure only for the immediate sub-rules of a `must<>` rule.
-* The `parse` methods no longer implicitly generate a global failure, they can return a local failure as a Boolean value. If a global failure is required, the top-level grammar rule has to start with a `must<>`.
+* The `parse` methods now return a `bool` and can also produce local failures. To obtain the previous behaviour of success-or-global-failure, the top-level grammar rule has to be wrapped in a `must<>`.
 
 ## 0.32
 

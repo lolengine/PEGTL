@@ -275,25 +275,27 @@ These rules are in namespace `tao::pegtl`.
 
 These rules are in namespace `tao::pegtl`.
 
-These rules replicate the intrusive way actions were attached to grammars in PEGTL 0.x versions.
-The `apply` and `if_apply`-rules allow actions to be explicitly called from within the grammar.
+These rules replicate the intrusive way actions were called from within the grammar in the PEGTL 0.x with the `apply<>` and `if_apply<>` rules.
 The actions for these rules are classes (rather than class templates as required for the `parse()`-functions and `action<>`-rule).
-These rules respect the current `apply_mode`, but do **not** use the control-class to invoke the actions.
+These rules respect the current `apply_mode`, but don't use the control-class to invoke the actions.
 
 ###### `apply< A... >`
 
-* Equivalent to `success` wrt. parsing, but also:
 * Calls `A::apply()` for all `A`, in order, with an empty input and all states as arguments.
+* If any `A::apply()` has a boolean return type and returns `false`, no further `A::apply()` calls are made and the result is equivalent to `failure`, otherwise:
+* Equivalent to `success` wrt. parsing.
 
 ###### `apply0< A... >`
 
-* Equivalent to `success` wrt. parsing, but also:
 * Calls `A::apply0()` for all `A`, in order, with all states as arguments.
+* If any `A::apply0()` has a boolean return type and returns `false`, no further `A::apply0()` calls are made and the result is equivalent to `failure`, otherwise:
+* Equivalent to `success` wrt. parsing.
 
 ###### `if_apply< R, A... >`
 
-* Equivalent to `R` wrt. parsing, but also:
+* Equivalent to `seq< R, apply< A... > >` wrt. parsing, but also:
 * If `R` matches, calls `A::apply()`, for all `A`, in order, with the input matched by `R` and all states as arguments.
+* If any `A::apply()` has a boolean return type and returns `false`, no further `A::apply()` calls are made.
 
 ## Atomic Rules
 
@@ -533,6 +535,12 @@ A unicode code point is considered *valid* when it is in the range `0` to `0x10f
 * The next 1-4 bytes are the UTF-8 encoding of a valid unicode code point.
 * Consumes the 1-4 bytes when it succeeds.
 
+###### `bom`
+
+* Succeeds when the input is not empty, and:
+* The next 3 bytes are the UTF-8 encoding of character U+FEFF, byte order mark (BOM).
+* Equivalent to `one< 0xfeff >`.
+
 ###### `not_one< C, ... >`
 
 * Succeeds when the input is not empty, and:
@@ -595,6 +603,12 @@ Unaligned memory is no problem on x86 compatible processors; on some other archi
 * The next 2 (or 4) input bytes encode a valid unicode code point.
 * Consumes these 2 (or 4) bytes when it succeeds.
 
+###### `bom`
+
+* Succeeds when the input is not empty, and:
+* The next 2 bytes are the UTF-16 encoding of character U+FEFF, byte order mark (BOM).
+* Equivalent to `one< 0xfeff >`.
+
 ###### `not_one< C, ... >`
 
 * Succeeds when the input contains at least 2 bytes, and:
@@ -653,6 +667,12 @@ Unaligned memory is no problem on x86 compatible processors; on some other archi
 * The next 4 input bytes encode a valid unicode code point.
 * Consumes these 4 bytes when it succeeds.
 
+###### `bom`
+
+* Succeeds when the input is not empty, and:
+* The next 4 bytes are the UTF-32 encoding of character U+FEFF, byte order mark (BOM).
+* Equivalent to `one< 0xfeff >`.
+
 ###### `not_one< C, ... >`
 
 * Succeeds when the input contains at least 4 bytes, and:
@@ -708,6 +728,9 @@ Unaligned memory is no problem on x86 compatible processors; on some other archi
 * [`blank`](#blank) <sup>[(ascii rules)](#ascii-rules)</sup>
 * [`bof`](#bof) <sup>[(atomic rules)](#atomic-rules)</sup>
 * [`bol`](#bol) <sup>[(atomic rules)](#atomic-rules)</sup>
+* [`bom`](#bom) <sup>[(utf-8 rules)](#utf-8-rules)</sup>
+* [`bom`](#bom-1) <sup>[(utf-16 rules)](#utf-16-rules)</sup>
+* [`bom`](#bom-2) <sup>[(utf-32 rules)](#utf-32-rules)</sup>
 * [`bytes< Num >`](#bytes-num-) <sup>[(atomic rules)](#atomic-rules)</sup>
 * [`control< C, R... >`](#control-c-r-) <sup>[(meta rules)](#meta-rules)</sup>
 * [`digit`](#digit) <sup>[(ascii rules)](#ascii-rules)</sup>

@@ -1,12 +1,12 @@
 ## Welcome to the PEGTL
 
 [![Release](https://img.shields.io/github/release/taocpp/PEGTL.svg)](https://github.com/taocpp/PEGTL/releases/latest)
-[![TravisCI](https://travis-ci.org/taocpp/PEGTL.svg)](https://travis-ci.org/taocpp/PEGTL)
-[![AppVeyor](https://ci.appveyor.com/api/projects/status/github/taocpp/PEGTL?svg=true)](https://ci.appveyor.com/project/taocpp/PEGTL)
+[![TravisCI](https://travis-ci.org/taocpp/PEGTL.svg?branch=master)](https://travis-ci.org/taocpp/PEGTL)
+[![AppVeyor](https://ci.appveyor.com/api/projects/status/pa5sbnw68tu650aq/branch/master?svg=true)](https://ci.appveyor.com/project/taocpp/PEGTL)
 [![Doozer.io](https://doozer.io/badge/taocpp/PEGTL/buildstatus/master)](https://doozer.io/user/taocpp/PEGTL)
-[![Coverage](https://img.shields.io/coveralls/taocpp/PEGTL.svg)](https://coveralls.io/github/taocpp/PEGTL)
+[![Coverage](https://coveralls.io/repos/github/taocpp/PEGTL/badge.svg?branch=master)](https://coveralls.io/github/taocpp/PEGTL)
 
-The Parsing Expression Grammar Template Library (PEGTL) is a zero-dependency C++11 header-only library for creating parsers according to a [Parsing Expression Grammar](http://en.wikipedia.org/wiki/Parsing_expression_grammar) (PEG).
+The Parsing Expression Grammar Template Library (PEGTL) is a zero-dependency C++11 header-only parser combinator library for creating parsers according to a [Parsing Expression Grammar](http://en.wikipedia.org/wiki/Parsing_expression_grammar) (PEG).
 
 ### Documentation
 
@@ -72,14 +72,14 @@ Each commit is automatically tested with multiple architectures, operating syste
   * Mac OS X 10.10, Xcode 6.4
   * Mac OS X 10.11, Xcode 7.3
   * macOS 10.12, Xcode 8.3
+  * macOS 10.12, Xcode 9.2
 
 * Linux (using libstdc++)
 
   * Debian 8 (i386), GCC 4.9
-  * Ubuntu 12.04 LTS (amd64), GCC 4.8, 4.9, 5, 6
-  * Ubuntu 12.04 LTS (amd64), Clang 3.4, 3.5, 3.6, 3.7, 3.8
-  * Ubuntu 14.04 LTS (amd64), GCC 7
-  * Ubuntu 14.04 LTS (amd64), Clang 3.9, 4.0
+  * Ubuntu 12.04 LTS (amd64), Clang 3.4, 3.7
+  * Ubuntu 14.04 LTS (amd64), GCC 4.8, 4.9, 5, 6, 7
+  * Ubuntu 14.04 LTS (amd64), Clang 3.5, 3.6, 3.8, 3.9, 4.0, 5.0
   * Ubuntu 14.04 LTS (i386, amd64), GCC 4.8
   * Ubuntu 16.04 LTS (i386, amd64, armhf, arm64), GCC 5
   * Fedora 24 (x86_64), GCC 6
@@ -87,7 +87,8 @@ Each commit is automatically tested with multiple architectures, operating syste
 
 * Android
 
-  * Android 5.1, NDK release 10e
+  * Android 4.4
+  * Android 5.1
 
 Additionally, each commit is checked with GCC's and Clang's sanitizers as well as [`valgrind`](http://valgrind.org/).
 Code coverage is automatically measured and the unit tests cover 100% of the core library code (for releases).
@@ -101,6 +102,7 @@ For details see the [changelog](doc/Changelog.md).
 * Christopher Diggins and the YARD parser for the general idea.
 * George Makrydakis for the [inspiration](https://github.com/irrequietus/typestring) to `TAOCPP_PEGTL_STRING`.
 * Johannes Overmann for his invaluable [`streplace`](https://code.google.com/p/streplace/) command-line tool.
+* Jörg-Christian Böhme for improving the Android CI build.
 * Kai Wolf for help with CMake.
 * Kenneth Geisshirt for Android compatibility and Android CI.
 * Kuzma Shapran for EOL testing and fixes.
