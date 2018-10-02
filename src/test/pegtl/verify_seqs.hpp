@@ -1,8 +1,8 @@
-// Copyright (c) 2014-2017 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2014-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
-#ifndef TAOCPP_PEGTL_INCLUDE_TEST_VERIFY_SEQS_HPP
-#define TAOCPP_PEGTL_INCLUDE_TEST_VERIFY_SEQS_HPP
+#ifndef TAO_PEGTL_SRC_TEST_PEGTL_VERIFY_SEQS_HPP  // NOLINT
+#define TAO_PEGTL_SRC_TEST_PEGTL_VERIFY_SEQS_HPP
 
 #include <tao/pegtl.hpp>
 
@@ -11,7 +11,7 @@
 
 namespace tao
 {
-   namespace TAOCPP_PEGTL_NAMESPACE
+   namespace TAO_PEGTL_NAMESPACE
    {
       template< template< typename... > class S >
       void verify_seqs( const result_type failure = result_type::LOCAL_FAILURE )
@@ -64,7 +64,7 @@ namespace tao
          verify_rule< try_catch< must< S< one< 'a' >, one< 'b' > > > > >( __LINE__, __FILE__, "aba", result_type::SUCCESS, 1 );
       }
 
-   }  // namespace TAOCPP_PEGTL_NAMESPACE
+   }  // namespace TAO_PEGTL_NAMESPACE
 
 }  // namespace tao
 

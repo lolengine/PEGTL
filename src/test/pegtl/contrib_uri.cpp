@@ -1,13 +1,16 @@
-// Copyright (c) 2014-2017 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2014-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
 #include "test.hpp"
+#include "verify_analyze.hpp"
+#include "verify_fail.hpp"
+#include "verify_rule.hpp"
 
 #include <tao/pegtl/contrib/uri.hpp>
 
 namespace tao
 {
-   namespace TAOCPP_PEGTL_NAMESPACE
+   namespace TAO_PEGTL_NAMESPACE
    {
       using GRAMMAR = must< uri::URI, eof >;
 
@@ -36,7 +39,7 @@ namespace tao
          verify_fail< GRAMMAR >( __LINE__, __FILE__, "" );
       }
 
-   }  // namespace TAOCPP_PEGTL_NAMESPACE
+   }  // namespace TAO_PEGTL_NAMESPACE
 
 }  // namespace tao
 

@@ -1,9 +1,12 @@
+// Copyright (c) 2017-2018 Dr. Colin Hirsch and Daniel Frey
+// Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
+
 #include <tao/pegtl.hpp>
 #include <tao/pegtl/contrib/uri.hpp>
 
 #include <iostream>
 
-namespace pegtl = tao::TAOCPP_PEGTL_NAMESPACE;
+namespace pegtl = tao::TAO_PEGTL_NAMESPACE;
 
 struct URI
 {
@@ -58,7 +61,8 @@ namespace uri
          }
       }
    };
-}
+
+}  // namespace uri
 
 URI::URI( const std::string& uri )
 {

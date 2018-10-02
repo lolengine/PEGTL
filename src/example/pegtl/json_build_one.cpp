@@ -1,7 +1,8 @@
-// Copyright (c) 2014-2017 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2014-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
 #include <cassert>
+#include <sstream>
 
 #include <tao/pegtl.hpp>
 #include <tao/pegtl/contrib/changes.hpp>
@@ -47,7 +48,7 @@ namespace examples
    };
 
    template<>
-   struct value_action< tao::TAOCPP_PEGTL_NAMESPACE::json::null >
+   struct value_action< tao::TAO_PEGTL_NAMESPACE::json::null >
    {
       static void apply0( result_state& result )
       {
@@ -56,7 +57,7 @@ namespace examples
    };
 
    template<>
-   struct value_action< tao::TAOCPP_PEGTL_NAMESPACE::json::true_ >
+   struct value_action< tao::TAO_PEGTL_NAMESPACE::json::true_ >
    {
       static void apply0( result_state& result )
       {
@@ -65,7 +66,7 @@ namespace examples
    };
 
    template<>
-   struct value_action< tao::TAOCPP_PEGTL_NAMESPACE::json::false_ >
+   struct value_action< tao::TAO_PEGTL_NAMESPACE::json::false_ >
    {
       static void apply0( result_state& result )
       {
@@ -74,12 +75,16 @@ namespace examples
    };
 
    template<>
-   struct value_action< tao::TAOCPP_PEGTL_NAMESPACE::json::number >
+   struct value_action< tao::TAO_PEGTL_NAMESPACE::json::number >
    {
       template< typename Input >
       static void apply( const Input& in, result_state& result )
       {
-         result.result = std::make_shared< number_json >( std::stold( in.string() ) );  // NOTE: stold() is not quite correct for JSON but we'll use it for this simple example.
+         std::stringstream ss;
+         ss << in.string();
+         long double v;
+         ss >> v;  // NOTE: not quite correct for JSON but we'll use it for this simple example.
+         result.result = std::make_shared< number_json >( v );
       }
    };
 
@@ -107,12 +112,12 @@ namespace examples
 
    template< typename Rule >
    struct array_action
-      : tao::TAOCPP_PEGTL_NAMESPACE::nothing< Rule >
+      : tao::TAO_PEGTL_NAMESPACE::nothing< Rule >
    {
    };
 
    template<>
-   struct array_action< tao::TAOCPP_PEGTL_NAMESPACE::json::value_separator >
+   struct array_action< tao::TAO_PEGTL_NAMESPACE::json::value_separator >
    {
       static void apply0( array_state& result )
       {
@@ -151,7 +156,7 @@ namespace examples
    };
 
    template<>
-   struct object_action< tao::TAOCPP_PEGTL_NAMESPACE::json::value_separator >
+   struct object_action< tao::TAO_PEGTL_NAMESPACE::json::value_separator >
    {
       static void apply0( object_state& result )
       {
@@ -164,12 +169,12 @@ namespace examples
    // clang-format off
    template< typename Rule > struct control : errors< Rule > {};  // Inherit from json_errors.hpp.
 
-   template<> struct control< tao::TAOCPP_PEGTL_NAMESPACE::json::value > : tao::TAOCPP_PEGTL_NAMESPACE::change_action< tao::TAOCPP_PEGTL_NAMESPACE::json::value, value_action, errors > {};
-   template<> struct control< tao::TAOCPP_PEGTL_NAMESPACE::json::string::content > : tao::TAOCPP_PEGTL_NAMESPACE::change_state< tao::TAOCPP_PEGTL_NAMESPACE::json::string::content, string_state, errors > {};
-   template<> struct control< tao::TAOCPP_PEGTL_NAMESPACE::json::array::content > : tao::TAOCPP_PEGTL_NAMESPACE::change_state_and_action< tao::TAOCPP_PEGTL_NAMESPACE::json::array::content, array_state, array_action, errors > {};
-   template<> struct control< tao::TAOCPP_PEGTL_NAMESPACE::json::object::content > : tao::TAOCPP_PEGTL_NAMESPACE::change_state_and_action< tao::TAOCPP_PEGTL_NAMESPACE::json::object::content, object_state, object_action, errors > {};
+   template<> struct control< tao::TAO_PEGTL_NAMESPACE::json::value > : tao::TAO_PEGTL_NAMESPACE::change_action< tao::TAO_PEGTL_NAMESPACE::json::value, value_action, errors > {};
+   template<> struct control< tao::TAO_PEGTL_NAMESPACE::json::string::content > : tao::TAO_PEGTL_NAMESPACE::change_state< tao::TAO_PEGTL_NAMESPACE::json::string::content, string_state, errors > {};
+   template<> struct control< tao::TAO_PEGTL_NAMESPACE::json::array::content > : tao::TAO_PEGTL_NAMESPACE::change_state_and_action< tao::TAO_PEGTL_NAMESPACE::json::array::content, array_state, array_action, errors > {};
+   template<> struct control< tao::TAO_PEGTL_NAMESPACE::json::object::content > : tao::TAO_PEGTL_NAMESPACE::change_state_and_action< tao::TAO_PEGTL_NAMESPACE::json::object::content, object_state, object_action, errors > {};
 
-   struct grammar : tao::TAOCPP_PEGTL_NAMESPACE::must< tao::TAOCPP_PEGTL_NAMESPACE::json::text, tao::TAOCPP_PEGTL_NAMESPACE::eof > {};
+   struct grammar : tao::TAO_PEGTL_NAMESPACE::must< tao::TAO_PEGTL_NAMESPACE::json::text, tao::TAO_PEGTL_NAMESPACE::eof > {};
    // clang-format on
 
 }  // namespace examples
@@ -178,8 +183,8 @@ int main( int argc, char** argv )
 {
    for( int i = 1; i < argc; ++i ) {
       examples::result_state result;
-      tao::TAOCPP_PEGTL_NAMESPACE::file_input<> in( argv[ i ] );
-      tao::TAOCPP_PEGTL_NAMESPACE::parse< examples::grammar, tao::TAOCPP_PEGTL_NAMESPACE::nothing, examples::control >( in, result );
+      tao::TAO_PEGTL_NAMESPACE::file_input<> in( argv[ i ] );
+      tao::TAO_PEGTL_NAMESPACE::parse< examples::grammar, tao::TAO_PEGTL_NAMESPACE::nothing, examples::control >( in, result );
       assert( result.result );
       std::cout << result.result << std::endl;
    }

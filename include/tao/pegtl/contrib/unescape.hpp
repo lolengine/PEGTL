@@ -1,8 +1,8 @@
-// Copyright (c) 2014-2017 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2014-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
-#ifndef TAOCPP_PEGTL_INCLUDE_CONTRIB_UNESCAPE_HPP
-#define TAOCPP_PEGTL_INCLUDE_CONTRIB_UNESCAPE_HPP
+#ifndef TAO_PEGTL_CONTRIB_UNESCAPE_HPP
+#define TAO_PEGTL_CONTRIB_UNESCAPE_HPP
 
 #include <cassert>
 #include <string>
@@ -13,7 +13,7 @@
 
 namespace tao
 {
-   namespace TAOCPP_PEGTL_NAMESPACE
+   namespace TAO_PEGTL_NAMESPACE
    {
       namespace unescape
       {
@@ -37,6 +37,10 @@ namespace tao
                return true;
             }
             if( utf32 <= 0xffff ) {
+               if( utf32 >= 0xd800 && utf32 <= 0xdfff ) {
+                  // nope, this is a UTF-16 surrogate
+                  return false;
+               }
                char tmp[] = { char( ( ( utf32 & 0xf000 ) >> 12 ) | 0xe0 ),
                               char( ( ( utf32 & 0x0fc0 ) >> 6 ) | 0x80 ),
                               char( ( ( utf32 & 0x003f ) ) | 0x80 ) };
@@ -54,7 +58,7 @@ namespace tao
             return false;
          }
 
-         // This function MUST only be called for characters matching tao::TAOCPP_PEGTL_NAMESPACE::ascii::xdigit!
+         // This function MUST only be called for characters matching tao::TAO_PEGTL_NAMESPACE::ascii::xdigit!
          template< typename I >
          I unhex_char( const char c )
          {
@@ -85,11 +89,11 @@ namespace tao
                case 'F':
                   return I( c - 'A' + 10 );
             }
-            throw std::runtime_error( "invalid character in unhex" );  // LCOV_EXCL_LINE
+            throw std::runtime_error( "invalid character in unhex" );  // NOLINT, LCOV_EXCL_LINE
          }
 
          template< typename I >
-         I unhex_string( const char* begin, const char* const end )
+         I unhex_string( const char* begin, const char* end )
          {
             I r = 0;
             while( begin != end ) {
@@ -110,7 +114,7 @@ namespace tao
             }
          };
 
-         // This action MUST be called for a character matching T which MUST be tao::TAOCPP_PEGTL_NAMESPACE::one< ... >.
+         // This action MUST be called for a character matching T which MUST be tao::TAO_PEGTL_NAMESPACE::one< ... >.
          template< typename T, char... Rs >
          struct unescape_c
          {
@@ -118,24 +122,26 @@ namespace tao
             static void apply( const Input& in, State& st )
             {
                assert( in.size() == 1 );
-               st.unescaped += apply_one( *in.begin(), static_cast< const T* >( nullptr ) );
+               st.unescaped += apply_one( in, static_cast< const T* >( nullptr ) );
             }
 
-            template< char... Qs >
-            static char apply_one( const char c, const one< Qs... >* )
+            template< typename Input, char... Qs >
+            static char apply_one( const Input& in, const one< Qs... >* /*unused*/ )
             {
                static_assert( sizeof...( Qs ) == sizeof...( Rs ), "size mismatch between escaped characters and their mappings" );
-               return apply_two( c, { Qs... }, { Rs... } );
+               return apply_two( in, { Qs... }, { Rs... } );
             }
 
-            static char apply_two( const char c, const std::initializer_list< char >& q, const std::initializer_list< char >& r )
+            template< typename Input >
+            static char apply_two( const Input& in, const std::initializer_list< char >& q, const std::initializer_list< char >& r )
             {
+               const char c = *in.begin();
                for( std::size_t i = 0; i < q.size(); ++i ) {
                   if( *( q.begin() + i ) == c ) {
                      return *( r.begin() + i );
                   }
                }
-               throw std::runtime_error( "invalid character in unescape" );  // LCOV_EXCL_LINE
+               throw parse_error( "invalid character in unescape", in );  // NOLINT, LCOV_EXCL_LINE
             }
          };
 
@@ -171,7 +177,7 @@ namespace tao
          // (b) accepts multiple consecutive escaped 16-bit values.
          // When applied to more than one escape sequence, unescape_j
          // translates UTF-16 surrogate pairs in the input into a single
-         // UTF-8 sequence in st.unescaped, as required for JSON by RFC 7159.
+         // UTF-8 sequence in st.unescaped, as required for JSON by RFC 8259.
 
          struct unescape_j
          {
@@ -185,18 +191,21 @@ namespace tao
                      const auto d = unhex_string< unsigned >( b + 6, b + 10 );
                      if( ( 0xdc00 <= d ) && ( d <= 0xdfff ) ) {
                         b += 6;
+                        // note: no need to check the result code, as we are always >= 0x10000 and < 0x110000.
                         utf8_append_utf32( st.unescaped, ( ( ( c & 0x03ff ) << 10 ) | ( d & 0x03ff ) ) + 0x10000 );
                         continue;
                      }
                   }
-                  utf8_append_utf32( st.unescaped, c );
+                  if( !utf8_append_utf32( st.unescaped, c ) ) {
+                     throw parse_error( "invalid escaped unicode code point", in );
+                  }
                }
             }
          };
 
       }  // namespace unescape
 
-   }  // namespace TAOCPP_PEGTL_NAMESPACE
+   }  // namespace TAO_PEGTL_NAMESPACE
 
 }  // namespace tao
 

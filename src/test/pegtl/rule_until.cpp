@@ -1,12 +1,41 @@
-// Copyright (c) 2014-2017 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2014-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
 #include "test.hpp"
+#include "verify_analyze.hpp"
+#include "verify_rule.hpp"
 
 namespace tao
 {
-   namespace TAOCPP_PEGTL_NAMESPACE
+   namespace TAO_PEGTL_NAMESPACE
    {
+      struct my_rule
+      {
+         template< apply_mode A,
+                   rewind_mode M,
+                   template< typename... > class Action,
+                   template< typename... > class Control,
+                   typename Input >
+         static bool match( Input& /*unused*/, bool& v )
+         {
+            return v;
+         }
+      };
+
+      template< typename Rule >
+      struct my_action : nothing< Rule >
+      {
+      };
+
+      template<>
+      struct my_action< eof >
+      {
+         static void apply0( bool& v )
+         {
+            v = true;
+         }
+      };
+
       void unit_test()
       {
          verify_analyze< until< eof > >( __LINE__, __FILE__, false, false );
@@ -77,9 +106,14 @@ namespace tao
 
          verify_rule< try_catch< must< until< one< 'a' >, one< 'b' > > > > >( __LINE__, __FILE__, "bbb", result_type::LOCAL_FAILURE, 3 );
          verify_rule< try_catch< must< until< one< 'a' >, one< 'b' > > > > >( __LINE__, __FILE__, "bbbc", result_type::LOCAL_FAILURE, 4 );
+
+         bool success = false;
+         const bool result = parse< until< my_rule, eof >, my_action >( memory_input<>( "", __FUNCTION__ ), success );
+         TAO_PEGTL_TEST_ASSERT( result );
+         TAO_PEGTL_TEST_ASSERT( success );
       }
 
-   }  // namespace TAOCPP_PEGTL_NAMESPACE
+   }  // namespace TAO_PEGTL_NAMESPACE
 
 }  // namespace tao
 

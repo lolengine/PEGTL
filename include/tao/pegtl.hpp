@@ -1,8 +1,8 @@
-// Copyright (c) 2014-2017 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2014-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
-#ifndef TAOCPP_PEGTL_INCLUDE_PEGTL_HPP
-#define TAOCPP_PEGTL_INCLUDE_PEGTL_HPP
+#ifndef TAO_PEGTL_HPP
+#define TAO_PEGTL_HPP
 
 #include "pegtl/config.hpp"
 #include "pegtl/version.hpp"
@@ -10,6 +10,10 @@
 #include "pegtl/ascii.hpp"
 #include "pegtl/parse.hpp"
 #include "pegtl/rules.hpp"
+#include "pegtl/uint16.hpp"
+#include "pegtl/uint32.hpp"
+#include "pegtl/uint64.hpp"
+#include "pegtl/uint8.hpp"
 #include "pegtl/utf16.hpp"
 #include "pegtl/utf32.hpp"
 #include "pegtl/utf8.hpp"

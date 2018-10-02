@@ -1,4 +1,4 @@
-// Copyright (c) 2017 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2017-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
 #include <iostream>
@@ -7,9 +7,8 @@
 
 #include <tao/pegtl.hpp>
 #include <tao/pegtl/contrib/parse_tree.hpp>
-#include <tao/pegtl/internal/demangle.hpp>
 
-using namespace tao::TAOCPP_PEGTL_NAMESPACE;
+using namespace tao::TAO_PEGTL_NAMESPACE;  // NOLINT
 
 namespace example
 {
@@ -33,23 +32,7 @@ namespace example
    struct product : list_must< value, sor< multiply, divide > > {};
    struct expression : list_must< product, sor< plus, minus > > {};
 
-   struct grammar : must< expression, eof > {};
-   // clang-format on
-
-   // select which rules in the grammar will produce parse tree nodes:
-
-   // clang-format off
-   template< typename > struct store_simple : std::false_type {};
-   template< typename > struct store_content : std::false_type {};
-
-   template<> struct store_content< integer > : std::true_type {};
-   template<> struct store_content< variable > : std::true_type {};
-
-   template<> struct store_simple< plus > : std::true_type {};
-   template<> struct store_simple< minus > : std::true_type {};
-   template<> struct store_simple< multiply > : std::true_type {};
-   template<> struct store_simple< divide > : std::true_type {};
-   // clang-format on
+   struct grammar : seq< expression, eof > {};
 
    // after a node is stored successfully, you can add an optional transformer like this:
    struct rearrange : std::true_type
@@ -71,11 +54,12 @@ namespace example
       // becomes a single child, which then replaces the parent node and the recursion ends.
       static void transform( std::unique_ptr< parse_tree::node >& n )
       {
-         auto& c = n->children;
-         if( c.size() == 1 ) {
-            n = std::move( c.back() );
+         if( n->children.size() == 1 ) {
+            n = std::move( n->children.back() );
          }
          else {
+            n->remove_content();
+            auto& c = n->children;
             auto r = std::move( c.back() );
             c.pop_back();
             auto o = std::move( c.back() );
@@ -88,30 +72,40 @@ namespace example
       }
    };
 
-   // use the transformer from above.
-   // if a transformer is only used once,
-   // there is no need for an intermediate class.
+   // select which rules in the grammar will produce parse tree nodes:
 
-   // clang-format off
-   template<> struct store_simple< product > : rearrange {};
-   template<> struct store_simple< expression > : rearrange {};
-   // clang-format on
+   template< typename Rule >
+   using selector = parse_tree::selector<
+      Rule,
+      parse_tree::apply_store_content::to<
+         integer,
+         variable >,
+      parse_tree::apply_remove_content::to<
+         plus,
+         minus,
+         multiply,
+         divide >,
+      parse_tree::apply< rearrange >::to<
+         product,
+         expression > >;
 
    // debugging/show result:
 
    void print_node( const parse_tree::node& n, const std::string& s = "" )
    {
-      if( n.id != nullptr ) {
-         if( n.end.data != nullptr ) {
-            std::cout << s << internal::demangle( n.id->name() ) << " \"" << std::string( n.begin.data, n.end.data ) << "\" at " << position( n.begin, "" ) << " to " << position( n.end, "" ) << std::endl;
-         }
-         else {
-            std::cout << s << internal::demangle( n.id->name() ) << " at " << position( n.begin, "" ) << std::endl;
-         }
-      }
-      else {
+      // detect the root node:
+      if( n.is_root() ) {
          std::cout << "ROOT" << std::endl;
       }
+      else {
+         if( n.has_content() ) {
+            std::cout << s << n.name() << " \"" << n.content() << "\" at " << n.begin() << " to " << n.end() << std::endl;
+         }
+         else {
+            std::cout << s << n.name() << " at " << n.begin() << std::endl;
+         }
+      }
+      // print all child nodes
       if( !n.children.empty() ) {
          const auto s2 = s + "  ";
          for( auto& up : n.children ) {
@@ -125,9 +119,18 @@ namespace example
 int main( int argc, char** argv )
 {
    for( int i = 1; i < argc; ++i ) {
-      argv_input<> in( argv, i );
-      const auto result = parse_tree::parse< example::grammar, example::store_simple, example::store_content >( in );
-      example::print_node( result.root() );
+      try {
+         argv_input<> in( argv, i );
+         if( const auto root = parse_tree::parse< example::grammar, example::selector >( in ) ) {
+            example::print_node( *root );
+         }
+         else {
+            std::cout << "PARSE FAILED" << std::endl;
+         }
+      }
+      catch( const std::exception& e ) {
+         std::cout << "PARSE FAILED WITH EXCEPTION: " << e.what() << std::endl;
+      }
    }
    return 0;
 }

@@ -1,8 +1,8 @@
-// Copyright (c) 2014-2017 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2014-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
-#ifndef TAOCPP_PEGTL_INCLUDE_TEST_VERIFY_CHAR_HPP
-#define TAOCPP_PEGTL_INCLUDE_TEST_VERIFY_CHAR_HPP
+#ifndef TAO_PEGTL_SRC_TEST_PEGTL_VERIFY_CHAR_HPP  // NOLINT
+#define TAO_PEGTL_SRC_TEST_PEGTL_VERIFY_CHAR_HPP
 
 #include <cstdlib>
 #include <string>
@@ -12,7 +12,7 @@
 
 namespace tao
 {
-   namespace TAOCPP_PEGTL_NAMESPACE
+   namespace TAO_PEGTL_NAMESPACE
    {
       template< typename Rule >
       void verify_char( const std::size_t line, const char* file, const char data, const result_type result )
@@ -26,7 +26,7 @@ namespace tao
          verify_char< Rule >( line, file, data, result ? result_type::SUCCESS : result_type::LOCAL_FAILURE );
       }
 
-   }  // namespace TAOCPP_PEGTL_NAMESPACE
+   }  // namespace TAO_PEGTL_NAMESPACE
 
 }  // namespace tao
 

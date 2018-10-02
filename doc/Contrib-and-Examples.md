@@ -47,6 +47,10 @@ For all questions and remarks contact us at **taocpp(at)icemx.net**.
 * HTTP 1.1 grammar according to [RFC 7230](https://tools.ietf.org/html/rfc7230).
 * Has been used successfully but is still considered experimental.
 
+###### `<tao/pegtl/contrib/integer.hpp>`
+
+* Grammars and actions for PEGTL-input-to-integer conversions.
+
 ###### `<tao/pegtl/contrib/json.hpp>`
 
 * JSON grammar according to [RFC 7159](https://tools.ietf.org/html/rfc7159) (for UTF-8 encoded JSON only).
@@ -54,10 +58,7 @@ For all questions and remarks contact us at **taocpp(at)icemx.net**.
 
 ###### `<tao/pegtl/contrib/parse_tree.hpp>`
 
-* Basic infrastructure to build a parse tree.
-* Builds a full parse tree by default.
-* Supports selectors to choose which nodes will be stored in the parse tree and which nodes will store the matched content.
-* See also the [example](#srcexamplepegtlparse_treecpp) below.
+* See [Parse Tree](Parse-Tree.md).
 
 ###### `<tao/pegtl/contrib/raw_string.hpp>`
 
@@ -129,6 +130,10 @@ In this example the grammar takes a bit of a second place behind the infrastruct
 The basic approach is "shift-reduce", which is very close to a stack machine, which is a model often well suited to PEGTL grammar actions:
 Some actions merely push something onto a stack, while other actions apply some functions to the objects on the stack, usually reducing its size.
 
+###### `src/example/pegtl/chomsky_hierarchy.cpp`
+
+Examples of grammars for regular, context-free, and context-sensitive languages.
+
 ###### `src/example/pegtl/csv1.cpp` and `src/example/pegtl/csv2.cpp`
 
 Two simple examples for grammars that parse different kinds of CSV-style file formats.
@@ -136,6 +141,10 @@ Two simple examples for grammars that parse different kinds of CSV-style file fo
 ###### `src/example/pegtl/hello_world.cpp`
 
 Minimal parser-style "hello world" example from the [Getting Started](Getting-Started.md) page.
+
+###### `src/example/pegtl/indent_aware.cpp`
+
+Shows one approach to implementing an indentation-aware language with a very very small subset of Python.
 
 ###### `src/example/pegtl/json_parse.cpp`
 
@@ -164,9 +173,9 @@ Shows how to implement a custom parsing rule with the simplified calling convent
 
 ###### `src/example/pegtl/parse_tree.cpp`
 
-A small example which shows how to create a parse tree for a given grammar using [`<tao/pegtl/contrib/parse_tree.hpp>`](#taopegtlcontribparse_treehpp).
+A small example which shows how to create a parse tree for a given grammar using [`<tao/pegtl/contrib/parse_tree.hpp>`](Parse-Tree.md).
 
-The example shows how to choose which rules will produce a parse tree node and which rules will store the content. The example also shows how to add additional transformations to the parse tree to transform it into an AST-like structure or to simplify it.
+The example shows how to choose which rules will produce a parse tree node, which rules will store the content, and how to add additional transformations to the parse tree to transform it into an AST-like structure or to simplify it.
 
 Running the example with a slightly longer expression:
 
@@ -208,6 +217,10 @@ Grammar for a toy-version of S-expressions that shows how to include other files
 
 Simple example that adds a list of comma-separated `double`s read from `std::cin`.
 
+###### `src/example/pegtl/symbol_table.cpp`
+
+Simple example that shows how to parse with a symbol table.
+
 ###### `src/example/pegtl/unescape.cpp`
 
 Uses the building blocks from `<tao/pegtl/contrib/unescape.hpp>` to show how to actually unescape a string literal with various typical escape sequences.
@@ -217,4 +230,4 @@ Uses the building blocks from `<tao/pegtl/contrib/unescape.hpp>` to show how to 
 Shows how to use the included [tracer control](#taopegtlcontribtracerhpp), here together with the URI grammar from `<tao/pegtl/contrib/uri.hpp>`.
 Invoked with one or more URIs as command line arguments will attempt to parse the URIs while printing trace information to `std::cerr`.
 
-Copyright (c) 2014-2017 Dr. Colin Hirsch and Daniel Frey
+Copyright (c) 2014-2018 Dr. Colin Hirsch and Daniel Frey

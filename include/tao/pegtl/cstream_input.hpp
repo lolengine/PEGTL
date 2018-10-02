@@ -1,8 +1,8 @@
-// Copyright (c) 2017 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2017-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
-#ifndef TAOCPP_PEGTL_INCLUDE_CSTREAM_INPUT_HPP
-#define TAOCPP_PEGTL_INCLUDE_CSTREAM_INPUT_HPP
+#ifndef TAO_PEGTL_CSTREAM_INPUT_HPP
+#define TAO_PEGTL_CSTREAM_INPUT_HPP
 
 #include <cstdio>
 
@@ -14,7 +14,7 @@
 
 namespace tao
 {
-   namespace TAOCPP_PEGTL_NAMESPACE
+   namespace TAO_PEGTL_NAMESPACE
    {
       template< typename Eol = eol::lf_crlf >
       struct cstream_input
@@ -27,7 +27,12 @@ namespace tao
          }
       };
 
-   }  // namespace TAOCPP_PEGTL_NAMESPACE
+#ifdef __cpp_deduction_guides
+      template< typename... Ts >
+      cstream_input( Ts&&... )->cstream_input<>;
+#endif
+
+   }  // namespace TAO_PEGTL_NAMESPACE
 
 }  // namespace tao
 

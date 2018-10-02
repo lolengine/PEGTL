@@ -1,15 +1,16 @@
-// Copyright (c) 2016-2017 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2016-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
 #include "test.hpp"
+#include "verify_fail.hpp"
 
 #include <tao/pegtl/contrib/raw_string.hpp>
 
 namespace tao
 {
-   namespace TAOCPP_PEGTL_NAMESPACE
+   namespace TAO_PEGTL_NAMESPACE
    {
-      std::string content;
+      std::string content;  // NOLINT
 
       using rstring = raw_string< '[', '=', ']' >;
       using qstring = raw_string< '[', '=', ']', alpha, digit >;
@@ -63,13 +64,13 @@ namespace tao
          memory_input<> in( m, m + M - 1, file, 0, line, 0 );
          const auto r = parse< Rule, Action >( in );
          if( ( !r ) || ( content != std::string( n, N - 1 ) ) ) {
-            TAOCPP_PEGTL_TEST_FAILED( "input data [ '" << m << "' ] expected success with [ '" << n << "' ] but got [ '" << content << "' ] result [ " << r << " ]" );
+            TAO_PEGTL_TEST_FAILED( "input data [ '" << m << "' ] expected success with [ '" << n << "' ] but got [ '" << content << "' ] result [ " << r << " ]" );
          }
          content.clear();
          memory_input< tracking_mode::LAZY > in2( m, m + M - 1, file, 0, line, 0 );
          const auto r2 = parse< Rule, Action >( in2 );
          if( ( !r2 ) || ( content != std::string( n, N - 1 ) ) ) {
-            TAOCPP_PEGTL_TEST_FAILED( "input data [ '" << m << "' ] with tracking_mode::LAZY expected success with [ '" << n << "' ] but got [ '" << content << "' ] result [ " << r2 << " ]" );
+            TAO_PEGTL_TEST_FAILED( "input data [ '" << m << "' ] with tracking_mode::LAZY expected success with [ '" << n << "' ] but got [ '" << content << "' ] result [ " << r2 << " ]" );
          }
       }
 
@@ -129,7 +130,7 @@ namespace tao
          verify_fail< qgrammar >( __LINE__, __FILE__, "[=[a1aa]=]" );
       }
 
-   }  // namespace TAOCPP_PEGTL_NAMESPACE
+   }  // namespace TAO_PEGTL_NAMESPACE
 
 }  // namespace tao
 

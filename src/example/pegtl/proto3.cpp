@@ -1,14 +1,14 @@
-// Copyright (c) 2017 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2017-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
-#define TAOCPP_PEGTL_PRETTY_DEMANGLE 1
+#define TAO_PEGTL_PRETTY_DEMANGLE 1
 
 #include <tao/pegtl.hpp>
 #include <tao/pegtl/analyze.hpp>
 
 namespace tao
 {
-   namespace TAOCPP_PEGTL_NAMESPACE
+   namespace TAO_PEGTL_NAMESPACE
    {
       namespace proto3
       {
@@ -100,7 +100,7 @@ namespace tao
 
          struct enum_name : ident {};
          struct enum_value_option : seq< option_name, sps, equ, sps, constant > {};
-         struct enum_field : seq< ident, sps, equ, sps, int_lit, sps, opt< if_must< one< '[' >, sps, list_must< enum_value_option, comma, sp >, sps, one< ']' >, sps > >, semi > {};
+         struct enum_field : seq< ident, sps, equ, sps, int_lit, sps, opt_must< one< '[' >, sps, list_must< enum_value_option, comma, sp >, sps, one< ']' >, sps >, semi > {};
          struct enum_body : if_must< one< '{' >, sps, star< sor< option, enum_field, semi >, sps >, one< '}' > > {};
          struct enum_ : if_must< string< 'e', 'n', 'u', 'm' >, sps, enum_name, sps, enum_body > {};
 
@@ -128,13 +128,13 @@ namespace tao
 
       }  // namespace proto3
 
-   }  // namespace TAOCPP_PEGTL_NAMESPACE
+   }  // namespace TAO_PEGTL_NAMESPACE
 
 }  // namespace tao
 
 int main( int argc, char** argv )
 {
-   using namespace tao::TAOCPP_PEGTL_NAMESPACE;
+   using namespace tao::TAO_PEGTL_NAMESPACE;  // NOLINT
 
    analyze< proto3::proto >();
 

@@ -1,8 +1,8 @@
-// Copyright (c) 2014-2017 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2014-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
-#ifndef TAOCPP_PEGTL_INCLUDE_CONTRIB_RAW_STRING_HPP
-#define TAOCPP_PEGTL_INCLUDE_CONTRIB_RAW_STRING_HPP
+#ifndef TAO_PEGTL_CONTRIB_RAW_STRING_HPP
+#define TAO_PEGTL_CONTRIB_RAW_STRING_HPP
 
 #include <cstddef>
 #include <type_traits>
@@ -13,6 +13,7 @@
 
 #include "../internal/bytes.hpp"
 #include "../internal/eof.hpp"
+#include "../internal/eol.hpp"
 #include "../internal/must.hpp"
 #include "../internal/not_at.hpp"
 #include "../internal/rule_conjunction.hpp"
@@ -24,7 +25,7 @@
 
 namespace tao
 {
-   namespace TAOCPP_PEGTL_NAMESPACE
+   namespace TAO_PEGTL_NAMESPACE
    {
       namespace internal
       {
@@ -38,7 +39,7 @@ namespace tao
                       template< typename... > class Action,
                       template< typename... > class Control,
                       typename Input >
-            static bool match( Input& in, std::size_t& marker_size )
+            static bool match( Input& in, std::size_t& marker_size ) noexcept( noexcept( in.size( 0 ) ) )
             {
                if( in.empty() || ( in.peek_char( 0 ) != Open ) ) {
                   return false;
@@ -47,7 +48,7 @@ namespace tao
                   switch( const auto c = in.peek_char( i ) ) {
                      case Open:
                         marker_size = i + 1;
-                        in.bump( marker_size );
+                        in.bump_in_this_line( marker_size );
                         eol::match( in );
                         return true;
                      case Marker:
@@ -68,14 +69,14 @@ namespace tao
          template< char Marker, char Close >
          struct at_raw_string_close
          {
-            using analyze_t = analysis::generic< analysis::rule_type::ANY >;
+            using analyze_t = analysis::generic< analysis::rule_type::OPT >;
 
             template< apply_mode A,
                       rewind_mode,
                       template< typename... > class Action,
                       template< typename... > class Control,
                       typename Input >
-            static bool match( Input& in, const std::size_t& marker_size )
+            static bool match( Input& in, const std::size_t& marker_size ) noexcept( noexcept( in.size( 0 ) ) )
             {
                if( in.size( marker_size ) < marker_size ) {
                   return false;
@@ -114,7 +115,7 @@ namespace tao
                       template< typename... > class Control,
                       typename Input,
                       typename... States >
-            static bool match( Input& in, const std::size_t& marker_size, States&&... )
+            static bool match( Input& in, const std::size_t& marker_size, States&&... /*unused*/ )
             {
                auto m = in.template mark< M >();
 
@@ -188,14 +189,14 @@ namespace tao
       template< char Open, char Marker, char Close, typename... Contents >
       struct raw_string
       {
-         using analyze_t = analysis::generic< analysis::rule_type::ANY >;
-
          // This is used for binding the apply()-method and for error-reporting
          // when a raw string is not closed properly or has invalid content.
          struct content
             : internal::raw_string_until< internal::at_raw_string_close< Marker, Close >, Contents... >
          {
          };
+
+         using analyze_t = typename internal::seq< internal::bytes< 1 >, content, internal::bytes< 1 > >::analyze_t;
 
          template< apply_mode A,
                    rewind_mode M,
@@ -206,17 +207,16 @@ namespace tao
          static bool match( Input& in, States&&... st )
          {
             std::size_t marker_size;
-            if( Control< internal::raw_string_open< Open, Marker > >::template match< A, M, Action, Control >( in, marker_size ) ) {
-               if( Control< internal::must< content > >::template match< A, M, Action, Control >( in, marker_size, st... ) ) {
-                  in.bump_in_this_line( marker_size );
-                  return true;
-               }
+            if( internal::raw_string_open< Open, Marker >::template match< A, M, Action, Control >( in, marker_size ) ) {
+               internal::must< content >::template match< A, M, Action, Control >( in, marker_size, st... );
+               in.bump_in_this_line( marker_size );
+               return true;
             }
             return false;
          }
       };
 
-   }  // namespace TAOCPP_PEGTL_NAMESPACE
+   }  // namespace TAO_PEGTL_NAMESPACE
 
 }  // namespace tao
 

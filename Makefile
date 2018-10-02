@@ -1,5 +1,5 @@
 # The Art of C++
-# Copyright (c) 2014-2017 Dr. Colin Hirsch and Daniel Frey
+# Copyright (c) 2014-2018 Dr. Colin Hirsch and Daniel Frey
 # Please see LICENSE for license or visit https://github.com/taocpp/PEGTL
 
 .SUFFIXES:
@@ -34,6 +34,7 @@ CXXFLAGS ?= -Wall -Wextra -Wshadow -Werror -O3 $(MINGW_CXXFLAGS)
 
 CLANG_TIDY ?= clang-tidy
 
+HEADERS := $(filter-out include/tao/pegtl/internal/endian_win.hpp include/tao/pegtl/internal/file_mapper_win32.hpp,$(shell find include -name '*.hpp')) $(filter-out src/test/pegtl/main.hpp,$(shell find src -name '*.hpp'))
 SOURCES := $(shell find src -name '*.cpp')
 DEPENDS := $(SOURCES:%.cpp=build/%.d)
 BINARIES := $(SOURCES:%.cpp=build/%)
@@ -68,7 +69,7 @@ cppcheck: $(HEADERS:%.hpp=build/%.cppcheck)
 	@echo "All $(words $(HEADERS)) cppcheck tests passed."
 
 build/%.clang-tidy: %
-	$(CLANG_TIDY) -extra-arg "-Iinclude" -extra-arg "-std=c++11" -checks=*,-google-*,-llvm-namespace-comment,-clang-analyzer-alpha*,-cppcoreguidelines*,-modernize-raw-string-literal,-misc-sizeof-expression,-cert-err58-cpp,-cert-err60-cpp $< 2>/dev/null
+	$(CLANG_TIDY) -extra-arg "-Iinclude" -extra-arg "-std=c++11" -checks=*,-fuchsia-*,-google-runtime-references,-google-runtime-int,-google-readability-todo,-cppcoreguidelines-pro-bounds-pointer-arithmetic,-cppcoreguidelines-pro-bounds-array-to-pointer-decay,-hicpp-no-array-decay,-hicpp-signed-bitwise,-modernize-raw-string-literal,-misc-sizeof-expression -warnings-as-errors=* $< 2>/dev/null
 	@mkdir -p $(@D)
 	@touch $@
 

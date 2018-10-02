@@ -1,11 +1,13 @@
-// Copyright (c) 2014-2017 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2014-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
 #include "test.hpp"
+#include "verify_analyze.hpp"
+#include "verify_rule.hpp"
 
 namespace tao
 {
-   namespace TAOCPP_PEGTL_NAMESPACE
+   namespace TAO_PEGTL_NAMESPACE
    {
       int at_counter = 0;
 
@@ -27,7 +29,7 @@ namespace tao
 
       void unit_test()
       {
-         TAOCPP_PEGTL_TEST_ASSERT( at_counter == 0 );
+         TAO_PEGTL_TEST_ASSERT( at_counter == 0 );
 
          verify_analyze< not_at< eof > >( __LINE__, __FILE__, false, false );
          verify_analyze< not_at< any > >( __LINE__, __FILE__, false, false );
@@ -43,21 +45,21 @@ namespace tao
          {
             memory_input<> in( "a", 1, __FILE__ );
             parse< alpha, at_action >( in );
-            TAOCPP_PEGTL_TEST_ASSERT( at_counter == 1 );
+            TAO_PEGTL_TEST_ASSERT( at_counter == 1 );
          }
          {
             memory_input<> in( "1", 1, __FILE__ );
             parse< not_at< alpha >, at_action >( in );
-            TAOCPP_PEGTL_TEST_ASSERT( at_counter == 1 );
+            TAO_PEGTL_TEST_ASSERT( at_counter == 1 );
          }
          {
             memory_input<> in( "a", 1, __FILE__ );
             parse< not_at< alpha >, at_action >( in );
-            TAOCPP_PEGTL_TEST_ASSERT( at_counter == 1 );
+            TAO_PEGTL_TEST_ASSERT( at_counter == 1 );
          }
       }
 
-   }  // namespace TAOCPP_PEGTL_NAMESPACE
+   }  // namespace TAO_PEGTL_NAMESPACE
 
 }  // namespace tao
 

@@ -1,8 +1,8 @@
-// Copyright (c) 2014-2017 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2014-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
-#ifndef TAOCPP_PEGTL_INCLUDE_ANALYSIS_INSERT_RULES_HPP
-#define TAOCPP_PEGTL_INCLUDE_ANALYSIS_INSERT_RULES_HPP
+#ifndef TAO_PEGTL_ANALYSIS_INSERT_RULES_HPP
+#define TAO_PEGTL_ANALYSIS_INSERT_RULES_HPP
 
 #include "../config.hpp"
 
@@ -11,7 +11,7 @@
 
 namespace tao
 {
-   namespace TAOCPP_PEGTL_NAMESPACE
+   namespace TAO_PEGTL_NAMESPACE
    {
       namespace analysis
       {
@@ -21,7 +21,7 @@ namespace tao
          template<>
          struct insert_rules<>
          {
-            static void insert( grammar_info&, rule_info& )
+            static void insert( grammar_info& /*unused*/, rule_info& /*unused*/ )
             {
             }
          };
@@ -38,7 +38,7 @@ namespace tao
 
       }  // namespace analysis
 
-   }  // namespace TAOCPP_PEGTL_NAMESPACE
+   }  // namespace TAO_PEGTL_NAMESPACE
 
 }  // namespace tao
 

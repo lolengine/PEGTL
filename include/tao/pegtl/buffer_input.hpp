@@ -1,10 +1,11 @@
-// Copyright (c) 2016-2017 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2016-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
-#ifndef TAOCPP_PEGTL_INCLUDE_BUFFER_INPUT_HPP
-#define TAOCPP_PEGTL_INCLUDE_BUFFER_INPUT_HPP
+#ifndef TAO_PEGTL_BUFFER_INPUT_HPP
+#define TAO_PEGTL_BUFFER_INPUT_HPP
 
 #include <cstddef>
+#include <cstdint>
 #include <cstring>
 #include <memory>
 #include <string>
@@ -22,7 +23,7 @@
 
 namespace tao
 {
-   namespace TAOCPP_PEGTL_NAMESPACE
+   namespace TAO_PEGTL_NAMESPACE
    {
       template< typename Reader, typename Eol = eol::lf_crlf, typename Source = std::string >
       class buffer_input
@@ -50,7 +51,12 @@ namespace tao
          }
 
          buffer_input( const buffer_input& ) = delete;
+         buffer_input( buffer_input&& ) = delete;
+
+         ~buffer_input() = default;
+
          void operator=( const buffer_input& ) = delete;
+         void operator=( buffer_input&& ) = delete;
 
          bool empty()
          {
@@ -100,9 +106,9 @@ namespace tao
             return m_current.data[ offset ];
          }
 
-         unsigned char peek_byte( const std::size_t offset = 0 ) const noexcept
+         std::uint8_t peek_byte( const std::size_t offset = 0 ) const noexcept
          {
-            return static_cast< unsigned char >( peek_char( offset ) );
+            return static_cast< std::uint8_t >( peek_char( offset ) );
          }
 
          void bump( const std::size_t in_count = 1 ) noexcept
@@ -132,7 +138,7 @@ namespace tao
          {
             if( m_current.data + amount > m_end ) {
                if( m_current.data + amount <= m_buffer.get() + m_maximum ) {
-                  if( const auto r = m_reader( const_cast< char* >( m_end ), amount - std::size_t( m_end - m_current.data ) ) ) {
+                  if( const auto r = m_reader( m_end, amount - std::size_t( m_end - m_current.data ) ) ) {
                      m_end += r;
                   }
                   else {
@@ -148,12 +154,12 @@ namespace tao
             return internal::marker< iterator_t, M >( m_current );
          }
 
-         TAOCPP_PEGTL_NAMESPACE::position position( const iterator_t& it ) const
+         TAO_PEGTL_NAMESPACE::position position( const iterator_t& it ) const
          {
-            return TAOCPP_PEGTL_NAMESPACE::position( it, m_source );
+            return TAO_PEGTL_NAMESPACE::position( it, m_source );
          }
 
-         TAOCPP_PEGTL_NAMESPACE::position position() const
+         TAO_PEGTL_NAMESPACE::position position() const
          {
             return position( m_current );
          }
@@ -168,11 +174,12 @@ namespace tao
          std::size_t m_maximum;
          std::unique_ptr< char[] > m_buffer;
          iterator_t m_current;
-         const char* m_end;
+         char* m_end;
          const Source m_source;
+         void* internal_state = nullptr;
       };
 
-   }  // namespace TAOCPP_PEGTL_NAMESPACE
+   }  // namespace TAO_PEGTL_NAMESPACE
 
 }  // namespace tao
 

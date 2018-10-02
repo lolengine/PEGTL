@@ -1,5 +1,102 @@
 # Changelog
 
+## 2.7.1
+
+Released 2018-09-29
+
+* Added new ASCII convenience rule [`forty_two`](Rule-Reference.md#forty_two-c-).
+* Added experimental `if_then` rule.
+* Simplified how parse tree nodes can be selected.
+* Reduced the number of intermediate parse tree nodes.
+* Allowed an action class template to be used with the parse tree.
+
+## 2.7.0
+
+Released 2018-07-31
+
+* Added [`mmap_file<>`](Inputs-and-Parsing.md#file-input) support for Windows.
+* Added [deduction guides](https://en.cppreference.com/w/cpp/language/class_template_argument_deduction) for the input classes when compiling with C++17.
+
+## 2.6.1
+
+Released 2018-07-22
+
+* Fixed endianness detection in test program.
+
+## 2.6.0
+
+Released 2018-06-22
+
+* Added [Conan](https://conan.io/) [packages](https://bintray.com/taocpp/public-conan/pegtl%3Ataocpp/).
+* Fixed the UTF-8 decoder to no longer accept UTF-16 surrogates.
+* Fixed the UTF-16 decoder to no longer accept UTF-16 unmatched surrogates.
+* Fixed the UTF-32 "decoder" to no longer accept UTF-16 surrogates.
+* Fixed `pegtl/contrib/unescape.hh` to no longer accept unmatched surrogates.
+* Optimised convenience rule [`two`](Rule-Reference.md#two-c-).
+* Added new convenience rule [`three`](Rule-Reference.md#three-c-).
+
+## 2.5.2
+
+Released 2018-05-31
+
+* Fixed [`opt`](Rule-Reference.md#opt-r-) and [`until`](Rule-Reference.md#until-r-s-) to work as documented in some rare edge cases.
+* Used [`opt_must`](Rule-Reference.md#opt_must-r-s-) and [`star_must`](Rule-Reference.md#star_must-r-s-) to optimise some included grammars.
+
+## 2.5.1
+
+Released 2018-05-14
+
+* Added new convenience rule [`opt_must`](Rule-Reference.md#opt_must-r-s-).
+* Optimised convenience rule [`if_must`](Rule-Reference.md#if_must-r-s-).
+* Fixed examples to compile with Visual Studio and MinGW.
+* Added [automated testing](https://travis-ci.org/taocpp/PEGTL) with GCC 8.
+
+## 2.5.0
+
+Released 2018-05-01
+
+* Added rules to match Unicode properties via [ICU](http://site.icu-project.org) to contrib.
+* Improved the [Parse Tree / AST interface](Parse-Tree.md).
+* Fixed parse tree node generation to correctly remove intermediate nodes.
+* Added big- and little-endian support to the UTF-16 and UTF-32 rules.
+* Added rules for UINT-8 and big- and little-endian UINT-16, UINT-32 and UINT-64.
+* Added function to `memory_input<>` to obtain the line around a position.
+* Added function to `memory_input<>` to start again from the beginning.
+* Added example for Python-style indentation-aware grammars.
+* Added examples for regular, context-free, and context-sensitive grammars.
+* Added example for how to parse with a symbol table.
+* Added [automated testing](https://travis-ci.org/taocpp/PEGTL) with Clang 6.
+* Added [automated testing](https://travis-ci.org/taocpp/PEGTL) with Clang's `-fms-extensions`.
+* Fixed build with Clang when `-fms-extensions` is used (`clang-cl`).
+
+## 2.4.0
+
+Released 2018-02-17
+
+* Improved and documented the [Parse Tree / AST support](Parse-Tree.md).
+* Changed prefix of all macros from `TAOCPP_PEGTL_` to `TAO_PEGTL_`. Compatibility macros with the old names are provided, they will be removed in version 3.0.
+* Added a deleted overload to prevent creating a `memory_input<>` from a temporary `std::string`.
+
+## 2.3.4
+
+Released 2018-02-08
+
+* Fixed build on older systems where `O_CLOEXEC` is not available.
+* Added [automated testing](https://travis-ci.org/taocpp/PEGTL) with Android 6.0 and 7.0.
+
+## 2.3.3
+
+Released 2018-01-01
+
+* Added more `noexcept`-specifications.
+* Fixed most `clang-tidy`-issues.
+
+## 2.3.2
+
+Released 2017-12-16
+
+* Worked around a Visual Studio 15.5 bug.
+
 ## 2.3.1
 
 Released 2017-12-14
@@ -74,7 +171,7 @@ Released 2017-06-23
 
 * Added optional template parameters to [`raw_string`](Contrib-and-Examples.md#taopegtlcontribraw_stringhpp) for rules that the content must match.
 * Added new contrib rules [`rep_one_min_max`](Contrib-and-Examples.md#taopegtlcontribrep_one_min_maxhpp) and `ellipsis`.
-* Fixed broken [`TAOCPP_PEGTL_KEYWORD`](Rule-Reference.md#taocpp_pegtl_keyword--) macro.
+* Fixed broken [`TAOCPP_PEGTL_KEYWORD`](Rule-Reference.md#tao_pegtl_keyword--) macro.
 * Fixed a bug in the contrib HTTP grammar which prevented it from parsing status lines in some cases.
 * Fixed build with MinGW-w64 on Windows.
 * Added [automated testing](https://ci.appveyor.com/project/taocpp/PEGTL) with MinGW-w64.
@@ -110,13 +207,13 @@ Released 2017-05-18
 
   * Added combinator class [`minus`](Rule-Reference.md#minus-m-s-).
   * Added ASCII rule class [`keyword`](Rule-Reference.md#keyword-c--).
-  * Added [`string`](Rule-Reference.md#string-c1-c2--) rules for [UTF-8](Rule-Reference.md#string-c1-c2---1), [UTF-16](Rule-Reference.md#string-c1-c2---2) and [UTF-32](Rule-Reference.md#string-c1-c2---3).
+  * Added [`string`](Rule-Reference.md#string-c--1) rules for UTF-8, UTF-16 and UTF-32.
   * Added [`apply`](Rule-Reference.md#apply-a-), [`apply0`](Rule-Reference.md#apply0-a-) and [`if_apply`](Rule-Reference.md#if_apply-r-a-) rules for intrusive actions.
   * Added incremental input support rules [`discard`](Rule-Reference.md#discard) and [`require`](Rule-Reference.md#require-num-).
 
 * String Macros
 
-  * Renamed to [`TAOCPP_PEGTL_(I)STRING`](Rule-Reference.md#taocpp_pegtl_istring--).
+  * Renamed to [`TAOCPP_PEGTL_(I)STRING`](Rule-Reference.md#tao_pegtl_istring--).
   * Increased allowed string length to 512.
   * Allowed embedded null bytes.
   * Reduced template instantiation depth.
@@ -162,7 +259,7 @@ Released 2015-11-12
 
 Released 2015-09-21
 
-* Added `file_parser` as alias for `mmap_parser`or `read_parser` depending on availability of the former.
+* Added `file_parser` as alias for `mmap_parser` or `read_parser` depending on availability of the former.
 * Added Clang 3.7 to the automated tests.
 * Added Mac OS X with Xcode 6 and Xcode 7 to the automated tests.
 * Added coverage test and improved test coverage to 100%.
@@ -172,7 +269,7 @@ Released 2015-09-21
 
 Released 2015-08-23
 
-* Added [`pegtl_string_t`](Rule-Reference.md#taocpp_pegtl_string--) and [`pegtl_istring_t`](Rule-Reference.md#taocpp_pegtl_istring--) to simplify string definitions as follows:
+* Added [`pegtl_string_t`](Rule-Reference.md#tao_pegtl_string--) and [`pegtl_istring_t`](Rule-Reference.md#tao_pegtl_istring--) to simplify string definitions as follows:
 ```c++
    pegtl::string< 'h', 'e', 'l', 'l', 'o' >  // Normal
    pegtl_string_t( "hello" )                 // New shortcut
@@ -403,4 +500,4 @@ Released 2008
 Development of the PEGTL started in November 2007 as an experiment in C++0x.
 It is based on ideas from the YARD library by Christopher Diggins.
 
-Copyright (c) 2007-2017 Dr. Colin Hirsch and Daniel Frey
+Copyright (c) 2007-2018 Dr. Colin Hirsch and Daniel Frey

@@ -1,15 +1,16 @@
-// Copyright (c) 2016-2017 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2016-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
 #include <cassert>
 #include <cstdint>
 #include <iostream>
+#include <sstream>
 #include <string>
 #include <vector>
 
 #include <tao/pegtl.hpp>
 
-namespace pegtl = tao::TAOCPP_PEGTL_NAMESPACE;
+namespace pegtl = tao::TAO_PEGTL_NAMESPACE;
 
 namespace csv1
 {
@@ -55,7 +56,11 @@ namespace csv1
       static void apply( const Input& in, result_data& data )
       {
          assert( !data.empty() );
-         data.back().push_back( std::stoul( in.string() ) );
+         std::stringstream ss;
+         ss << in.string();
+         unsigned long v;
+         ss >> v;
+         data.back().push_back( v );
       }
    };
 
@@ -83,7 +88,7 @@ namespace csv1
       }
    };
 
-}  // csv1
+}  // namespace csv1
 
 int main( int argc, char** argv )
 {

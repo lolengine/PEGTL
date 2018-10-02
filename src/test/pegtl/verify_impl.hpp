@@ -1,11 +1,12 @@
-// Copyright (c) 2014-2017 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2014-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
-#ifndef TAOCPP_PEGTL_INCLUDE_TEST_VERIFY_IMPL_HPP
-#define TAOCPP_PEGTL_INCLUDE_TEST_VERIFY_IMPL_HPP
+#ifndef TAO_PEGTL_SRC_TEST_PEGTL_VERIFY_IMPL_HPP  // NOLINT
+#define TAO_PEGTL_SRC_TEST_PEGTL_VERIFY_IMPL_HPP
 
 #include <cstddef>
-#include <stdexcept>
+#include <cstdlib>
+#include <iostream>
 #include <string>
 
 #include <tao/pegtl/apply_mode.hpp>
@@ -13,11 +14,11 @@
 #include <tao/pegtl/rewind_mode.hpp>
 
 #include "result_type.hpp"
-#include "test_failed.hpp"
+#include "test.hpp"
 
 namespace tao
 {
-   namespace TAOCPP_PEGTL_NAMESPACE
+   namespace TAO_PEGTL_NAMESPACE
    {
       template< typename Rule, template< typename... > class Action, typename Input >
       result_type verify_impl_two( Input& in )
@@ -32,7 +33,8 @@ namespace tao
             return result_type::GLOBAL_FAILURE;
          }
          catch( ... ) {
-            throw std::runtime_error( "code should be unreachable" );  // LCOV_EXCL_LINE
+            std::cerr << "Code should be unreachable in " << __FUNCTION__ << " (" << __FILE__ << ':' << __LINE__ << ')' << std::endl;
+            std::abort();
          }
       }
 
@@ -44,10 +46,10 @@ namespace tao
          if( ( received == expected ) && ( ( received == result_type::GLOBAL_FAILURE ) || ( in.size( 999999999 ) == remain ) ) ) {
             return;
          }
-         TAOCPP_PEGTL_TEST_FAILED( "input data [ '" << data << "' ] result received/expected [ " << received << " / " << expected << " ] remain received/expected [ " << in.size( 999999999 ) << " / " << remain << " ]" );
+         TAO_PEGTL_TEST_FAILED( "input data [ '" << data << "' ] result received/expected [ " << received << " / " << expected << " ] remain received/expected [ " << in.size( 999999999 ) << " / " << remain << " ]" );
       }
 
-   }  // namespace TAOCPP_PEGTL_NAMESPACE
+   }  // namespace TAO_PEGTL_NAMESPACE
 
 }  // namespace tao
 

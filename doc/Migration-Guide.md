@@ -1,5 +1,13 @@
 # Migration Guide
 
+## Version 2.4.0
+
+The common prefix for all macros was changed from `TAOCPP_PEGTL_` to `TAO_PEGTL_`.
+
+Compatibility macros can still be used, the library should be fully compatible when
+used with older macros. Note, however, that the old macros will be removed in a
+future version 3.0. Consider updating your macro prefixes now.
+
 ## From 1.y to 2.z
 
 Some of the [changes](Changelog.md#200) for version 2.0.0 require modifications to any source using the PEGTL.
@@ -28,4 +36,4 @@ Please contact the authors at `taocpp(at)icemx.net` for any further questions wh
 There were [many important changes](Changelog.md#100) leading up to version 1.0.0.
 Please contact the authors at `taocpp(at)icemx.net` for any further questions when updating the PEGTL.
 
-Copyright (c) 2017 Dr. Colin Hirsch and Daniel Frey
+Copyright (c) 2017-2018 Dr. Colin Hirsch and Daniel Frey

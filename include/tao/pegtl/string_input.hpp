@@ -1,8 +1,8 @@
-// Copyright (c) 2014-2017 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2014-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
-#ifndef TAOCPP_PEGTL_INCLUDE_STRING_INPUT_HPP
-#define TAOCPP_PEGTL_INCLUDE_STRING_INPUT_HPP
+#ifndef TAO_PEGTL_STRING_INPUT_HPP
+#define TAO_PEGTL_STRING_INPUT_HPP
 
 #include <string>
 #include <utility>
@@ -14,7 +14,7 @@
 
 namespace tao
 {
-   namespace TAOCPP_PEGTL_NAMESPACE
+   namespace TAO_PEGTL_NAMESPACE
    {
       namespace internal
       {
@@ -27,6 +27,14 @@ namespace tao
                : data( std::forward< T >( in_data ) )
             {
             }
+
+            string_holder( const string_holder& ) = delete;
+            string_holder( string_holder&& ) = delete;
+
+            ~string_holder() = default;
+
+            void operator=( const string_holder& ) = delete;
+            void operator=( string_holder&& ) = delete;
          };
 
       }  // namespace internal
@@ -42,9 +50,22 @@ namespace tao
               memory_input< P, Eol, Source >( data.data(), data.size(), std::forward< T >( in_source ), std::forward< Ts >( ts )... )
          {
          }
+
+         string_input( const string_input& ) = delete;
+         string_input( string_input&& ) = delete;
+
+         ~string_input() = default;
+
+         void operator=( const string_input& ) = delete;
+         void operator=( string_input&& ) = delete;
       };
 
-   }  // namespace TAOCPP_PEGTL_NAMESPACE
+#ifdef __cpp_deduction_guides
+      template< typename... Ts >
+      explicit string_input( Ts&&... )->string_input<>;
+#endif
+
+   }  // namespace TAO_PEGTL_NAMESPACE
 
 }  // namespace tao
 

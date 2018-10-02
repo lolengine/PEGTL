@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2017 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2014-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
 #include <iostream>
@@ -6,7 +6,7 @@
 #include <tao/pegtl.hpp>
 #include <tao/pegtl/analyze.hpp>
 
-using namespace tao::TAOCPP_PEGTL_NAMESPACE;
+using namespace tao::TAO_PEGTL_NAMESPACE;  // NOLINT
 
 namespace sexpr
 {

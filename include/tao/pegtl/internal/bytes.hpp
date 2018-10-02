@@ -1,8 +1,8 @@
-// Copyright (c) 2014-2017 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2014-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
-#ifndef TAOCPP_PEGTL_INCLUDE_INTERNAL_BYTES_HPP
-#define TAOCPP_PEGTL_INCLUDE_INTERNAL_BYTES_HPP
+#ifndef TAO_PEGTL_INTERNAL_BYTES_HPP
+#define TAO_PEGTL_INTERNAL_BYTES_HPP
 
 #include "../config.hpp"
 
@@ -12,7 +12,7 @@
 
 namespace tao
 {
-   namespace TAOCPP_PEGTL_NAMESPACE
+   namespace TAO_PEGTL_NAMESPACE
    {
       namespace internal
       {
@@ -22,7 +22,7 @@ namespace tao
             using analyze_t = analysis::counted< analysis::rule_type::ANY, Num >;
 
             template< typename Input >
-            static bool match( Input& in )
+            static bool match( Input& in ) noexcept( noexcept( in.size( 0 ) ) )
             {
                if( in.size( Num ) >= Num ) {
                   in.bump( Num );
@@ -39,7 +39,7 @@ namespace tao
 
       }  // namespace internal
 
-   }  // namespace TAOCPP_PEGTL_NAMESPACE
+   }  // namespace TAO_PEGTL_NAMESPACE
 
 }  // namespace tao
 

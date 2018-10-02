@@ -1,4 +1,4 @@
-// Copyright (c) 2016-2017 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2016-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
 #include <iostream>
@@ -6,7 +6,7 @@
 
 #include <tao/pegtl.hpp>
 
-namespace pegtl = tao::TAOCPP_PEGTL_NAMESPACE;
+namespace pegtl = tao::TAO_PEGTL_NAMESPACE;
 
 namespace csv2
 {
@@ -168,7 +168,7 @@ namespace csv2
       std::cout << std::endl;
    }
 
-}  // csv2
+}  // namespace csv2
 
 int main( int argc, char** argv )
 {

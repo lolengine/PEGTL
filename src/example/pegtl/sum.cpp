@@ -1,13 +1,14 @@
-// Copyright (c) 2014-2017 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2014-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
 #include <cstdlib>
 #include <iostream>
+#include <sstream>
 #include <string>
 
 #include <tao/pegtl.hpp>
 
-using namespace tao::TAOCPP_PEGTL_NAMESPACE;
+using namespace tao::TAO_PEGTL_NAMESPACE;  // NOLINT
 
 #include "double.hpp"
 
@@ -41,8 +42,11 @@ namespace sum
       static void apply( const Input& in, double& sum )
       {
          // assume all values will fit into a C++ double
-         auto ptr = const_cast< char* >( in.end() );
-         sum += std::strtod( const_cast< char* >( in.begin() ), &ptr );
+         std::stringstream ss;
+         ss << in.string();
+         double v;
+         ss >> v;
+         sum += v;
       }
    };
 

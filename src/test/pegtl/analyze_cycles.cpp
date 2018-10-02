@@ -1,11 +1,12 @@
-// Copyright (c) 2014-2017 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2014-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
 #include "test.hpp"
+#include "verify_analyze.hpp"
 
 namespace tao
 {
-   namespace TAOCPP_PEGTL_NAMESPACE
+   namespace TAO_PEGTL_NAMESPACE
    {
       template< typename... Rules >
       struct any_seq
@@ -20,6 +21,18 @@ namespace tao
          verify_analyze< eolf >( __LINE__, __FILE__, false, false );
          verify_analyze< success >( __LINE__, __FILE__, false, false );
          verify_analyze< failure >( __LINE__, __FILE__, true, false );
+         {
+            struct tst : star< tst >
+            {
+            };
+            verify_analyze< tst >( __LINE__, __FILE__, false, true );
+         }
+         {
+            struct tst : plus< tst >
+            {
+            };
+            verify_analyze< tst >( __LINE__, __FILE__, false, true );
+         }
          {
             struct tst : seq< eof, at< digit >, tst >
             {
@@ -291,7 +304,7 @@ namespace tao
          }
       }
 
-   }  // namespace TAOCPP_PEGTL_NAMESPACE
+   }  // namespace TAO_PEGTL_NAMESPACE
 
 }  // namespace tao
 

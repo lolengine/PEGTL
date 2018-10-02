@@ -1,4 +1,4 @@
-// Copyright (c) 2017 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2017-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
 // This is a small experiment with a grammar that can recover from errors.
@@ -16,7 +16,7 @@
 
 #include <tao/pegtl.hpp>
 
-using namespace tao::TAOCPP_PEGTL_NAMESPACE;
+using namespace tao::TAO_PEGTL_NAMESPACE;  // NOLINT
 
 // clang-format off
 

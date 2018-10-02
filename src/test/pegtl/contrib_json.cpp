@@ -1,14 +1,17 @@
-// Copyright (c) 2014-2017 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2014-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
 #include "test.hpp"
+#include "verify_analyze.hpp"
+#include "verify_fail.hpp"
+#include "verify_rule.hpp"
 
 #include <tao/pegtl/analyze.hpp>
 #include <tao/pegtl/contrib/json.hpp>
 
 namespace tao
 {
-   namespace TAOCPP_PEGTL_NAMESPACE
+   namespace TAO_PEGTL_NAMESPACE
    {
       template< typename Rule >
       void verify_file_fail( const std::size_t line, const char* file, const std::string& s )
@@ -16,7 +19,7 @@ namespace tao
          file_input<> in( s );
          try {
             parse< Rule >( in );
-            TAOCPP_PEGTL_TEST_FAILED( "expected exception" );
+            TAO_PEGTL_TEST_FAILED( "expected exception" );
          }
          catch( ... ) {
          }
@@ -84,11 +87,11 @@ namespace tao
          verify_fail< GRAMMAR >( __LINE__, __FILE__, "[\"\xF4\x90\x80\x80\"]" );
          verify_fail< GRAMMAR >( __LINE__, __FILE__, "[\"\xF7\xBF\xBF\xBF\"]" );
 
-         TAOCPP_PEGTL_TEST_ASSERT( parse< GRAMMAR >( file_input<>( "src/test/pegtl/data/pass1.json" ) ) );
-         TAOCPP_PEGTL_TEST_ASSERT( parse< GRAMMAR >( file_input<>( "src/test/pegtl/data/pass2.json" ) ) );
-         TAOCPP_PEGTL_TEST_ASSERT( parse< GRAMMAR >( file_input<>( "src/test/pegtl/data/pass3.json" ) ) );
+         TAO_PEGTL_TEST_ASSERT( parse< GRAMMAR >( file_input<>( "src/test/pegtl/data/pass1.json" ) ) );
+         TAO_PEGTL_TEST_ASSERT( parse< GRAMMAR >( file_input<>( "src/test/pegtl/data/pass2.json" ) ) );
+         TAO_PEGTL_TEST_ASSERT( parse< GRAMMAR >( file_input<>( "src/test/pegtl/data/pass3.json" ) ) );
 
-         TAOCPP_PEGTL_TEST_ASSERT( parse< GRAMMAR >( file_input<>( "src/test/pegtl/data/blns.json" ) ) );
+         TAO_PEGTL_TEST_ASSERT( parse< GRAMMAR >( file_input<>( "src/test/pegtl/data/blns.json" ) ) );
 
          // verify_file_fail< GRAMMAR >( __LINE__, __FILE__, "src/test/pegtl/data/fail1.json" ); // disabled as it is valid now
          verify_file_fail< GRAMMAR >( __LINE__, __FILE__, "src/test/pegtl/data/fail2.json" );
@@ -131,7 +134,7 @@ namespace tao
          verify_file_fail< GRAMMAR >( __LINE__, __FILE__, "src/test/pegtl/data/fail39.json" );
       }
 
-   }  // namespace TAOCPP_PEGTL_NAMESPACE
+   }  // namespace TAO_PEGTL_NAMESPACE
 
 }  // namespace tao
 

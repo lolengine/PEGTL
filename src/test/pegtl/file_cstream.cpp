@@ -1,4 +1,4 @@
-// Copyright (c) 2016-2017 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2016-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
 #include <clocale>
@@ -8,9 +8,9 @@
 
 namespace tao
 {
-   namespace TAOCPP_PEGTL_NAMESPACE
+   namespace TAO_PEGTL_NAMESPACE
    {
-      struct file_content : seq< TAOCPP_PEGTL_STRING( "dummy content" ), eol, discard >
+      struct file_content : seq< TAO_PEGTL_STRING( "dummy content" ), eol, discard >
       {
       };
 
@@ -27,12 +27,12 @@ namespace tao
 #else
          std::FILE* stream = std::fopen( filename, "rb" );  // NOLINT
 #endif
-         TAOCPP_PEGTL_TEST_ASSERT( stream != nullptr );
-         TAOCPP_PEGTL_TEST_ASSERT( parse< file_grammar >( cstream_input<>( stream, 16, filename ) ) );
-         std::fclose( stream );
+         TAO_PEGTL_TEST_ASSERT( stream != nullptr );
+         TAO_PEGTL_TEST_ASSERT( parse< file_grammar >( cstream_input<>( stream, 16, filename ) ) );
+         std::fclose( stream );  // NOLINT(cppcoreguidelines-owning-memory)
       }
 
-   }  // namespace TAOCPP_PEGTL_NAMESPACE
+   }  // namespace TAO_PEGTL_NAMESPACE
 
 }  // namespace tao
 
